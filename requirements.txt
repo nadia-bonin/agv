@@ -1,0 +1,25 @@
+# Database
+mysql-connector-python==8.2.0
+PyMySQL==1.1.0
+SQLAlchemy==2.0.23
+
+# Authentication & Security
+PyJWT==2.8.0
+bcrypt==4.1.1
+cryptography==41.0.7
+
+# Environment
+python-dotenv==1.0.0
+
+# Utilities
+python-dateutil==2.8.2
+
+# Testing
+pytest==7.4.3
+pytest-cov==4.1.0
+
+# Logging
+loguru==0.7.2
+
+# Validation
+pydantic==2.5.0
