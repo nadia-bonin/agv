@@ -4,7 +4,7 @@ from .base import BaseModel
 
 class Role(BaseModel):
     """Modelo de Role/Perfil"""
-    
+
     def __init__(
         self,
         id: Optional[int] = None,
@@ -18,4 +18,3 @@ class Role(BaseModel):
         self.description = description
         self.created_at = created_at
         self.permissions = permissions or []
-        

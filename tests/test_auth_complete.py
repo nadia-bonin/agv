@@ -1,8 +1,13 @@
+import sys
+import os
+
+# Adicionar o diretório raiz ao Python path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 """
-tests/test_auth_complete.py
-Testes completos do sistema de autenticação e autorização
-Convertido do exemplo de uso para testes automatizados
+pytest tests/test_auth_complete.py -v
 """
+
 import pytest
 from datetime import datetime
 from src.services.auth_service import AuthService
@@ -11,6 +16,7 @@ from src.services.role_service import RoleService
 from src.repositories.user_repository import UserRepository
 from src.middleware.auth_middleware import auth_middleware
 from src.middleware.permission_middleware import permission_middleware
+from src.utils.emailutils import EmailUtils
 from src.utils.exceptions import (
     InvalidCredentialsError,
     PermissionDeniedError,
@@ -42,6 +48,11 @@ def user_repository():
     return UserRepository()
 
 @pytest.fixture(scope="function")
+def emailutils():
+    """Fixture do utilitário de email"""
+    return EmailUtils()
+
+@pytest.fixture(scope="function")
 def test_user_data():
     """Dados de teste para usuário"""
     timestamp = datetime.now().timestamp()
@@ -63,8 +74,7 @@ def registered_user(auth_service, test_user_data):
         "password": test_user_data["password"]
     }
 
-# ===== 1. TESTES DE REGISTRO =====
-
+# ===== TESTES DE REGISTRO =====
 class TestRegistration:
     """Testes de registro de usuário"""
 
@@ -113,8 +123,7 @@ class TestRegistration:
         with pytest.raises(ValidationError):
             auth_service.register(**test_user_data)
 
-# ===== 2. TESTES DE LOGIN =====
-
+# ===== TESTES DE LOGIN =====
 class TestLogin:
     """Testes de login"""
 
@@ -159,8 +168,7 @@ class TestLogin:
         assert result["user"].email == registered_user["email"]
         assert isinstance(result["user"].roles, list)
 
-# ===== 3. TESTES DE TOKEN =====
-
+# ===== TESTES DE TOKEN =====
 class TestTokenManagement:
     """Testes de gerenciamento de tokens"""
 
@@ -192,8 +200,7 @@ class TestTokenManagement:
         with pytest.raises(InvalidCredentialsError):
             auth_service.verify_token("token_invalido")
 
-# ===== 4. TESTES DE ALTERAÇÃO DE SENHA =====
-
+# ===== TESTES DE ALTERAÇÃO DE SENHA =====
 class TestPasswordChange:
     """Testes de alteração de senha"""
 
@@ -232,8 +239,7 @@ class TestPasswordChange:
                 new_password="123"
             )
 
-# ===== 5. TESTES DE ROLES E PERMISSÕES =====
-
+# ===== TESTES DE ROLES E PERMISSÕES =====
 class TestRolesAndPermissions:
     """Testes de roles e permissões"""
 
@@ -301,8 +307,7 @@ class TestRolesAndPermissions:
         except RecordNotFoundError:
             pytest.skip("Role 'user' não encontrada no banco")
 
-# ===== 6. TESTES DE MIDDLEWARE =====
-
+# ===== TESTES DE MIDDLEWARE =====
 class TestAuthMiddleware:
     """Testes de middleware de autenticação"""
 
@@ -373,8 +378,7 @@ class TestPermissionMiddleware:
         with pytest.raises(PermissionDeniedError):
             protected_function(token=registered_user["access_token"])
 
-# ===== 7. TESTES DE GERENCIAMENTO DE USUÁRIOS =====
-
+# ===== TESTES DE GERENCIAMENTO DE USUÁRIOS =====
 class TestUserManagement:
     """Testes de gerenciamento de usuários"""
 
@@ -424,8 +428,7 @@ class TestUserManagement:
         with pytest.raises(RecordNotFoundError):
             user_repository.find_by_id(999999999)
 
-# ===== 8. TESTES DE INTEGRAÇÃO =====
-
+# ===== TESTES DE INTEGRAÇÃO =====
 class TestIntegration:
     """Testes de integração completos"""
 
@@ -481,6 +484,5 @@ class TestIntegration:
         assert int(payload["sub"]) == user_id
 
 # ===== CONFIGURAÇÃO DO PYTEST =====
-
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"])

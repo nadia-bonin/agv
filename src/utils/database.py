@@ -7,9 +7,9 @@ from config.settings import settings
 
 class DatabaseManager:
     """Gerenciador de conexões com MySQL usando Connection Pool"""
-    
+
     _pool = None
-    
+
     @classmethod
     def initialize_pool(cls):
         """Inicializa o connection pool"""
@@ -30,14 +30,14 @@ class DatabaseManager:
             except Error as e:
                 logger.error(f"Erro ao criar connection pool: {e}")
                 raise
-    
+
     @classmethod
     @contextmanager
     def get_connection(cls) -> Generator:
         """Context manager para obter conexão do pool"""
         if cls._pool is None:
             cls.initialize_pool()
-        
+
         connection = None
         try:
             connection = cls._pool.get_connection()
@@ -48,7 +48,7 @@ class DatabaseManager:
         finally:
             if connection and connection.is_connected():
                 connection.close()
-    
+
     @classmethod
     @contextmanager
     def get_cursor(cls, dictionary=True):

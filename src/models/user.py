@@ -1,10 +1,13 @@
+from src.utils.emailutils import EmailUtils
+
 from datetime import datetime
 from typing import Optional, List
+# from email_validation import EmailUtils
 from .base import BaseModel
 
 class User(BaseModel):
     """Modelo de Usuário"""
-    
+
     def __init__(
         self,
         id: Optional[int] = None,
@@ -26,17 +29,17 @@ class User(BaseModel):
         self.created_at = created_at
         self.updated_at = updated_at
         self.roles = roles or []
-    
+
     def validate(self) -> bool:
         """Valida o modelo"""
         if not self.name or len(self.name) < 3:
             raise ValueError("Nome deve ter pelo menos 3 caracteres")
-        
-        if not self.email or '@' not in self.email:
+
+        if not EmailUtils.is_valid_email_regex(self.email):
             raise ValueError("Email inválido")
-        
+
         return True
-    
+
     def to_dict(self, include_password=False):
         """Converte para dict, excluindo senha por padrão"""
         data = super().to_dict()

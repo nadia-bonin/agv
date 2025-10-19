@@ -4,7 +4,7 @@ from .base import BaseModel
 
 class Permission(BaseModel):
     """Modelo de Permissão"""
-    
+
     def __init__(
         self,
         id: Optional[int] = None,
@@ -20,4 +20,3 @@ class Permission(BaseModel):
         self.action = action
         self.description = description
         self.created_at = created_at
-        
