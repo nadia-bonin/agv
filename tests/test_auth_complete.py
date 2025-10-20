@@ -28,7 +28,7 @@ from src.utils.exceptions import (
 # ===== FIXTURES =====
 
 @pytest.fixture(scope="function")
-def auth_service():
+def log_service():
     """Fixture do serviço de autenticação"""
     return AuthService()
 
